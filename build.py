@@ -231,7 +231,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
+    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU']:
     #    continue
 
     country_path = os.path.join('build', country_id.lower())
