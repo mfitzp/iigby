@@ -1,6 +1,6 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-{% for countr_id in countries %}
+{% for country_id in countries %}
    <url>
 
       <loc>https://isitgettingbetteryet.com/{{ country_id }}/</loc>
