@@ -3,6 +3,7 @@ import numpy as np
 
 import os
 import shutil
+import pathlib
 import jinja2
 from jinja2 import Template
 
@@ -211,18 +212,14 @@ country_status = {}  # Build a list of countries and statuses, for sorted homepa
 template_c = templateEnv.get_template('country.html')
 
 
+
 for country_id, country in country_lookup.items():
 
     if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
         continue
 
     country_path = os.path.join('build', country_id.lower())
-    try:
-        shutil.rmtree(country_path)
-    except:
-        pass
-
-    os.mkdir(country_path)
+    pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)
 
     status, cases, deaths, statements = is_it_better_yet(cfc, country_id)
 
