@@ -77,18 +77,19 @@ h3 {
 
 .rate-label {
     padding: 0.25em 1em;
-    font-size: 0.6rem;
-    background-color: #eee;
+    font-size: 1rem;
+    font-weight: bold;
     text-transform: uppercase;
-    color:  rgba(0, 0, 0, 0.7);
 }
 
-.rate.up {
-    background-color:rgba(213, 62, 79, 0.8); 
+.rate.up:before {
+    content:"\25B2";
+    color:rgba(213, 62, 79, 0.8); 
 }
 
-.rate.down {
-    background-color: rgba(102, 194, 165, 0.8);
+.rate.down:before {
+    content:"\25BC";    
+    color: rgba(102, 194, 165, 0.8);
 }
 
 
