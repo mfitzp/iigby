@@ -151,8 +151,6 @@ def is_it_better_yet(df, country=None):
     # Absolute term is based on absolute drop.
     absolute = window.sum() <= 0
 
-    print(window.sum())
-
     indec = {
         True: 'down',
         False: 'up',
@@ -202,15 +200,15 @@ def is_it_better_yet(df, country=None):
         (False, False, True, False): 'The number of daily cases is increasing, but there are signs of an decrease in daily deaths.',
         (False, False, True, True): 'The number of daily cases is increasing, but the number of daily deaths is decreasing.',
 
-        (False, True, False, False): 'There are early signs of an increase in daily cases, and daily deaths are increasing.',
-        (False, True, False, True): 'There are early signs of an increase in daily cases and deaths.',
-        (False, True, True, False): 'There are early signs of an increase in daily cases, but there are signs of an decrease in daily deaths.',
-        (False, True, True, True): 'There are early signs of an increase in daily cases, but daily deaths continue to fall.',
+        (False, True, False, False): 'There are early signs of an acceleration in daily cases, and daily deaths are increasing.',
+        (False, True, False, True): 'There are early signs of an acceleration in daily cases and deaths.',
+        (False, True, True, False): 'There are early signs of an acceleration in daily cases, but there are signs of an decrease in daily deaths.',
+        (False, True, True, True): 'There are early signs of an acceleration in daily cases, but daily deaths continue to fall.',
 
-        (True, False, False, False): 'There are early signs of an decrease in daily cases. However, daily deaths are still increasing.',
-        (True, False, False, True): 'There are early signs of an decrease in daily cases, but there are signs of an increase in daily deaths.',
-        (True, False, True, False): 'There are early signs of an decrease in daily cases and daily deaths',
-        (True, False, True, True): 'There are early signs of an decrease in daily cases, and daily deaths continue to fall.',
+        (True, False, False, False): 'There are early signs of a deceleration in daily cases. However, daily deaths are still increasing.',
+        (True, False, False, True): 'There are early signs of a deceleration in daily cases, although there are signs of an increase in daily deaths.',
+        (True, False, True, False): 'There are early signs of a deceleration in daily cases and daily deaths',
+        (True, False, True, True): 'There are early signs of a deceleration in daily cases, and daily deaths continue to fall.',
 
         (True, True, False, False): 'While the number of daily deaths is still increasing, the number of daily cases is decreasing.',
         (True, True, False, True): 'The number of daily cases is decreasing, but there are early signs of an increase in daily deaths',
@@ -225,7 +223,7 @@ def is_it_better_yet(df, country=None):
     }
 
     
-    return status, indec[trend.cases], indec[trend.deaths], statements
+    return status, indec[absolute.cases], indec[absolute.deaths], statements
 
 
 def status_card(country_name, status):
@@ -297,7 +295,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    # if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA']:
+    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
     #    continue
     
     print(country_lookup[country_id])
