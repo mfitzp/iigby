@@ -124,12 +124,12 @@ def is_it_better_yet(df, country=None):
     longer = df[-14:]
     recent = df[-7:]
 
-    slope_c, intercept, r_value, p_value, std_err = stats.linregress(
+    slope_c, _, _, _, _ = stats.linregress(
         index, 
         longer.cases
     )
 
-    slope_d, intercept, r_value, p_value, std_err = stats.linregress(
+    slope_d, _, _, _, _ = stats.linregress(
         index, 
         longer.deaths
     )
