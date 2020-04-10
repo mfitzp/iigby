@@ -120,8 +120,10 @@ def is_it_better_yet(df, country=None):
 
     total = df.sum()
 
-    index = np.array(df[-7:].index.values, dtype=float)
-    window = df[-7:]
+    WINDOW_SIZE = 5
+
+    index = np.array(df[-WINDOW_SIZE:].index.values, dtype=float)
+    window = df[-WINDOW_SIZE:]
 
     slope_c, _, _, _, _ = stats.linregress(
         index, 
