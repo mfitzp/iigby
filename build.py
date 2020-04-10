@@ -142,11 +142,11 @@ def is_it_better_yet(df, country=None):
         index, 
         window.deaths
     )
-        
-    # Trend is based on slope ("early indicator")
+
+    # Trend is based on slope ("early indicator") and latest data.
     trend = lambda: None
-    trend.cases = slope_c <= 0 or window.cases[-1] <= 0
-    trend.deaths = slope_d <= 0 or window.deaths[-1] <= 0
+    trend.cases = slope_c <= 0 or (window.cases[-3:] > 0).sum() < 3
+    trend.deaths = slope_d <= 0 or (window.deaths[-3:] > 0).sum() < 3
 
     # Absolute term is based on absolute drop.
     absolute = window.sum() <= 0
@@ -295,7 +295,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
+    #if country_id not in ['CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
     #    continue
     
     print(country_lookup[country_id])

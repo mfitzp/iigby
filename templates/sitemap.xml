@@ -3,7 +3,7 @@
 {% for country_id in countries %}
    <url>
 
-      <loc>https://isitgettingbetteryet.com/{{ country_id }}/</loc>
+      <loc>https://isitgettingbetteryet.com/{{ country_id|lower }}/</loc>
 
       <lastmod>{{ today.strftime('%Y-%m-%d') }}</lastmod>
 
