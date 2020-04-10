@@ -215,8 +215,8 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
-    #    continue
+    if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
+        continue
 
     country_path = os.path.join('build', country_id.lower())
     pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)

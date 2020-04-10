@@ -16,15 +16,15 @@ h3 {
 }
 
 .corona {
-    font-weight: bold;
     text-transform: uppercase;
     background-color: rgba(213, 62, 79, 0.25);
 }
 
 .page {
+    width: 100%;
+    padding: 0;
     margin: 0 auto;
     max-width: 900px;
-
 }
 
 .header {
@@ -32,7 +32,8 @@ h3 {
 }
 
 .country_chooser {
-    font-size: 1.5rem;
+    max-width: 95%;
+    font-size: 1.25rem;
     margin: 1rem 0;
 }
 
@@ -120,6 +121,10 @@ h3 {
     margin: auto;
 }
 
+.l-box {
+    padding: 0 1rem;
+}
+
 .source {
     margin: 5rem auto;
 
@@ -130,8 +135,16 @@ h3 {
 }
 
 .pure-table {
+    max-width: 100%;
     margin: 2rem auto;
+}
 
+.pure-table td {
+    padding: 0.5rem 0.5rem;
+}
+
+#world {
+    width: 100%;
 }
 
 a {

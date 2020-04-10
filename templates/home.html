@@ -6,12 +6,12 @@
 <div class="pure-u-1-1 table">
 
 <h3>Current status by country</h3>
-<table class="pure-table" id="world">
+<table class="pure-table pure-table-" id="world">
     <thead>
         <tr>
             <th>Country &#x21F5;</th>
-            <th>Cases/day &#x21F5;</th>
-            <th>Deaths/day &#x21F5;</th>
+            <th>Cases &#x21F5;</th>
+            <th>Deaths &#x21F5;</th>
             <th>Is it getting better? &#x21F5;</th>
         </tr>
     </thead>
@@ -28,7 +28,9 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
+<div class="pure-u-1-1 l-box">
 <h3>Key</h3>
 <ol>
     <li><span class="status status-label yes">yes</span> The number of cases/day is falling.</li>
@@ -38,8 +40,9 @@
     <li><span class="status status-label low">low</span> Not enough data (<100 cases total). </li>
 
 </ul>
-
 </div>
+
+
 <script>
 $(function() {
   $(".pure-table").tablesorter(
