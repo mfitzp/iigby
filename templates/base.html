@@ -22,8 +22,8 @@
 <meta property="keywords" content="corona, data, cases, deaths, daily"/>
 
 {% if country_id != 'WORLD' %}
-    <meta property="og:image" content="https://isitgettingbetteryet.com/{{ country_id }}/card.png">
-    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/{{ country_id }}/card.png">
+    <meta property="og:image" content="https://isitgettingbetteryet.com/{{ country_id|lower }}/card.png">
+    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/{{ country_id|lower }}/card.png">
 {% else %}
     <meta property="og:image" content="https://isitgettingbetteryet.com/card.png">
     <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/card.png">
@@ -90,7 +90,7 @@
             </p>
             
             <p>
-                Data analysis & design &copy;2020 <a href="https://www.mfitzp.com/">Martin Fitzpatrick</a> PhD 
+                Data analysis & design &copy;2020 <a href="https://www.mfitzp.com/cv/">Martin Fitzpatrick</a> PhD 
             
             </p>
         </div>
@@ -110,7 +110,6 @@ $(function() {
             // World, top level
             window.location.href = ('/')
         }
-        console.log(selected);
     })
 });
 </script>

@@ -19,7 +19,6 @@ from matplotlib.figure import Figure
 from matplotlib import font_manager as fm
 
 plt.style.use(['default', 'seaborn-poster', 'fivethirtyeight'])
-plt.rcParams["font.family"] = "Ubuntu Mono"
 
 
 font_dirs = ['./fonts', ]
@@ -235,7 +234,7 @@ def status_card(country_name, status):
         'low':   ('#eeeeee', '#000000'),
     }[status]
 
-    fig = Figure(figsize=(8,5))
+    fig = Figure(figsize=(8,4))
     ax = fig.add_subplot(1,1,1)
     ax.set_xticks([])
     ax.set_yticks([])
@@ -243,7 +242,7 @@ def status_card(country_name, status):
     
     ax.text(
         0.5, 
-        0.18, 
+        0.2, 
         'Is Coronavirus getting better in '.upper(), 
         fontname="Raleway",
         size=12, 
@@ -257,7 +256,7 @@ def status_card(country_name, status):
     ax.text(
         0.5, 
         0.1, 
-        country_name, 
+        '{}?'.format(country_name), 
         fontname="Raleway",
         size=24, 
         color=fg, 
@@ -299,7 +298,7 @@ for country_id, country in country_lookup.items():
     #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU']:
     #    continue
     
-    #print(country_lookup[country_id])
+    print(country_lookup[country_id])
 
     country_path = os.path.join('build', country_id.lower())
     pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)
