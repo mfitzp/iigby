@@ -1,0 +1,111 @@
+
+<html>
+<head>
+
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+<link rel="stylesheet" href="/styles.css">
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha256-dtGH1XcAyKopMui5x20KnPxuGuSx9Rs6piJB/4Oqu6I=" crossorigin="anonymous"></script>
+
+<title>{{ country}} Coronavirus | Is it getting better yet? Daily rate of change in Coronavirus deaths and cases</title>
+
+
+<meta name="description" content="{{ statement }}" />
+<meta property="og:title" content="{{ country}} Coronavirus | Is it getting better yet? Daily rate of change in Coronavirus deaths and cases"/>
+<meta name="twitter:title" content="{{ country}} Coronavirus | Is it getting better yet? Daily rate of change in Coronavirus deaths and cases">
+
+<meta property="og:description" content="{{ statement }}"/>
+<meta name="twitter:description" content="{{ statement }}">
+
+<meta property="keywords" content="corona, data, cases, deaths, daily"/>
+
+{% if country_id != 'WORLD' %}
+    <meta property="og:image" content="https://isitgettingbetteryet.com/{{ country_id }}/cases.png">
+    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/{{ country_id }}/cases.png">
+{% else %}
+    <meta property="og:image" content="https://isitgettingbetteryet.com/cases.png">
+    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/cases.png">
+{% endif %}
+<meta name="twitter:card" content="summary_large_image">    
+
+<meta property="og:site_name" content="Is it getting better yet?"/>
+<meta property="og:type" content="data"/>
+
+
+
+
+</head>
+<body>
+    <div class="pure-g page">
+
+
+        <div class="pure-u-1-1 header">
+            <h1>Is <span class="corona">Corona</span> getting better yet?</h1>
+            <select class="country_chooser">
+                    <option value="">World</option>
+                {% for c_id, c_name in countries.items() %}
+                    <option {% if country_id == c_id %}selected{% endif %} value="{{ c_id }}">{{ c_name }}</option>
+                {% endfor %}
+            </select>
+            
+            </div>
+
+
+
+    {% block body %}
+    {% endblock %}
+    {% block table %}
+    {% endblock %}
+
+    <div class="pure-g author">
+
+
+    </div>
+
+    <div class="pure-g source">
+            <div class="pure-u-1-1">
+            <p>
+                Data is sourced from the 
+                <a href="https://www.ecdc.europa.eu/en">European Centre for Disease Control</a>
+                daily report 
+                <a href="https://www.ecdc.europa.eu/en/publications-data">
+                    data on the geographic distribution of COVID-19 cases worldwide
+                </a>. Updated daily at 00:00 UTC.
+            </p>
+            <p>
+                Daily cases and deaths for each country are smoothed using a 7-day window function. 
+                Change in the daily rate is calculated using a 7-day rolling difference. Values above zero 
+                indicate the daily number of cases or deaths is <em>increasing</em>, while those
+                below zero indicate that the number of cases or deaths is <em>decreasing</em>.
+            </p>
+            
+            <p>
+                Data analysis & design &copy;2020 <a href="https://www.mfitzp.com/">Martin Fitzpatrick</a> PhD 
+            
+            </p>
+        </div>
+    </div>
+
+
+
+</div>
+<script>
+$(function() {
+    $('.country_chooser').change(function() {
+        var selected = $(this).children("option:selected").val();
+        if (selected) {
+            window.location.href = ('/' + selected.toLowerCase() + '/')
+
+        } else {
+            // World, top level
+            window.location.href = ('/')
+        }
+        console.log(selected);
+    })
+});
+</script>
+
+
+</body>
+</html>

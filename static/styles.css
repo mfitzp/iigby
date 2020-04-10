@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
+
+h1, h2, h3, h4, h5, p, div, select, ul, li {
+    font-family: 'Raleway';
+
+}
+
+h1, h2, h3, h4, h5 {
+    text-align: center;
+
+}
+
+h3 { 
+    margin-top: 4rem;
+
+}
+
+.corona {
+    font-weight: bold;
+    text-transform: uppercase;
+    background-color: rgba(213, 62, 79, 0.25);
+}
+
+.page {
+    margin: 0 auto;
+    max-width: 900px;
+
+}
+
+.header {
+    text-align: center;
+}
+
+.country_chooser {
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+.status-banner {
+    font-size: 12rem;
+    padding: 5rem 0rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+.status-label {
+    padding: 0.25em 1em;
+    font-size: 0.9rem;
+}
+
+.status {
+    background-color: #eee;
+    text-transform: uppercase;
+}
+
+.status.yes {
+    background-color: #66c2a5;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.status.maybe {
+    background-color: #fee090;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.status.no {
+    background-color:#d53e4f; 
+    color:  rgba(0, 0, 0, 0.8);
+
+}
+
+.status.uh_oh {
+    background-color:#d53e4f; 
+    color:  rgba(255, 255, 255, 0.8);
+}
+
+
+.rate-label {
+    padding: 0.25em 1em;
+    font-size: 0.6rem;
+    background-color: #eee;
+    text-transform: uppercase;
+    color:  rgba(0, 0, 0, 0.7);
+}
+
+.rate.up {
+    background-color:rgba(213, 62, 79, 0.8); 
+}
+
+.rate.down {
+    background-color: rgba(102, 194, 165, 0.8);
+}
+
+
+.statement {
+    font-size: 1.3rem;
+    text-align: center;
+    max-width: 80%;
+    margin: auto;
+}
+
+.legend {
+    font-size: 1.3rem;
+    text-align: center;
+    max-width: 80%;
+    margin: auto;
+}
+
+.plot {
+    padding: 2rem 0;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.legend {
+    font-size: 1rem;
+    text-align: center;
+    max-width: 80%;
+    margin: auto;
+}
+
+.source {
+    margin: 5rem auto;
+
+}
+
+.center {
+    text-align: center;
+}
+
+.pure-table {
+    margin: 2rem auto;
+
+}
+
+a {
+    text-decoration: none;
+    color: #2166ac;
+
+}
+
+ol {
+    list-style: none;
+    max-width: 500px;
+    line-height: 2rem;
+    margin: auto;
+}

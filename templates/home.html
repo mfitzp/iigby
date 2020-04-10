@@ -1,0 +1,71 @@
+{% extends 'country.html' %}
+
+
+{% block table %}
+
+<div class="pure-u-1-1 table">
+
+<h3>Current status by country</h3>
+<table class="pure-table" id="world">
+    <thead>
+        <tr>
+            <th>Country &#x21F5;</th>
+            <th>Cases/day &#x21F5;</th>
+            <th>Deaths/day &#x21F5;</th>
+            <th>Is it getting better? &#x21F5;</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for c_id, c_data in country_status.items() %}
+        <tr>
+            <td><a href="/{{ c_id|lower }}">{{ countries[c_id] }}</a></td>
+            <td class="center"><span class="rate rate-label {{ c_data.cases|replace(' ','_') }}">{{ c_data.cases }}</span></td>
+            <td class="center"><span class="rate rate-label {{ c_data.deaths|replace(' ','_') }}">{{ c_data.deaths }}</span></td>
+            <td class="center"><span class="status status-label {{ c_data.status|replace(' ','_') }}">{{ c_data.status }}</span></td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Key</h3>
+<ol>
+    <li><span class="status status-label yes">yes</span> The number of cases/day is falling.</li>
+    <li><span class="status status-label maybe">maybe</span> There are early indications of a fall in cases/day.</li>
+    <li><span class="status status-label no">no</span> The number of cases/day is rising.</li>
+    <li><span class="status status-label uh_oh">uh oh</span> There are early indications of a rebound in cases/day.</li>
+    <li><span class="status status-label low">low</span> Not enough data (<100 cases total). </li>
+
+</ul>
+
+</div>
+<script>
+$(function() {
+  $(".pure-table").tablesorter(
+    { 
+        sortList: [[3,0], [0,0]],
+        textSorter : function(a, b, direction, columnIndex, table) {
+            if (columnIndex == 3) {
+                var map = {yes:0, maybe:1, no:2, "uh oh":3, low:4},
+                    diff = map[a] - map[b];
+
+                if (diff < 0) {
+                    return -1;
+                }
+                if (diff > 0) {
+                    return 1;
+                }
+                return 0;
+            } else {
+                return a.localeCompare(b);
+            }
+        }    
+    }
+  );
+});
+    
+</script>
+
+
+{% endblock %}
