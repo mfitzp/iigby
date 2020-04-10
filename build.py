@@ -120,27 +120,26 @@ def is_it_better_yet(df, country=None):
 
     total = df.sum()
 
-    index = np.array(df[-14:].index.values, dtype=float)
-    longer = df[-14:]
-    recent = df[-7:]
+    index = np.array(df[-7:].index.values, dtype=float)
+    window = df[-7:]
 
     slope_c, _, _, _, _ = stats.linregress(
         index, 
-        longer.cases
+        window.cases
     )
 
     slope_d, _, _, _, _ = stats.linregress(
         index, 
-        longer.deaths
+        window.deaths
     )
         
     # Trend is based on slope ("early indicator")
     trend = lambda: None
-    trend.cases = slope_c <= 0
-    trend.deaths = slope_d <= 0
+    trend.cases = slope_c <= 0 or window.cases[-1] <= 0
+    trend.deaths = slope_d <= 0 or window.deaths[-1] <= 0
 
     # Absolute term is based on absolute drop.
-    absolute = recent.sum() <= 0
+    absolute = window.sum() <= 0
 
     indec = {
         True: 'down',
@@ -232,8 +231,8 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
-    #    continue
+    if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE']:
+        continue
 
     country_path = os.path.join('build', country_id.lower())
     pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)
