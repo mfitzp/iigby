@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 
 import os
+from scipy import stats
 import shutil
 import pathlib
 import jinja2
@@ -10,6 +11,7 @@ from jinja2 import Template
 templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
 templateEnv = jinja2.Environment(loader=templateLoader)
 
+WINDOW_SIZE = 7
 
 
 from matplotlib import pyplot as plt
@@ -118,12 +120,27 @@ def is_it_better_yet(df, country=None):
 
     total = df.sum()
 
-    long = df[-7:].sum()
-    short = df[-1:].sum()
+    index = np.array(df[-14:].index.values, dtype=float)
+    longer = df[-14:]
+    recent = df[-7:]
 
-    longb = long <= 0
-    shortb = short <= 0
+    slope_c, intercept, r_value, p_value, std_err = stats.linregress(
+        index, 
+        longer.cases
+    )
 
+    slope_d, intercept, r_value, p_value, std_err = stats.linregress(
+        index, 
+        longer.deaths
+    )
+        
+    # Trend is based on slope ("early indicator")
+    trend = lambda: None
+    trend.cases = slope_c <= 0
+    trend.deaths = slope_d <= 0
+
+    # Absolute term is based on absolute drop.
+    absolute = recent.sum() <= 0
 
     indec = {
         True: 'down',
@@ -133,7 +150,7 @@ def is_it_better_yet(df, country=None):
     if total.cases < 50:
         return (
             "low",  # status when not enough data
-            indec[shortb.cases], indec[shortb.deaths],
+            indec[trend.cases], indec[absolute.deaths],
             {
             'cases':"There are too few cases to get an accurate picture. But no news may be good news.",  # cases
             'deaths':"There are too few cases to get an accurate picture. But no news may be good news.",  # deaths
@@ -149,7 +166,7 @@ def is_it_better_yet(df, country=None):
         (False, True): 'uh oh',
         (True, False): 'maybe',
         (True, True): 'yes'
-    }[(shortb.cases, longb.cases)]
+    }[(trend.cases, absolute.cases)]
 
     statement_c = {
         # 3 < 0, 7 < 0
@@ -157,7 +174,7 @@ def is_it_better_yet(df, country=None):
         (False, True): 'There are early signs of an increase in daily cases.',
         (True, False): 'There are early signs of a decrease in daily cases.',
         (True, True): 'The number of daily cases is falling.'
-    }[(shortb.cases, longb.cases)]
+    }[(trend.cases, absolute.cases)]
 
     statement_d = {
         # 3 < 0, 7 < 0
@@ -165,7 +182,7 @@ def is_it_better_yet(df, country=None):
         (False, True): 'There are early signs of an increase in daily deaths.',
         (True, False): 'There are early signs of a decrease in daily deaths.',
         (True, True): 'The number of daily deaths is falling.'
-    }[(shortb.deaths, longb.deaths)]    
+    }[(trend.deaths, absolute.deaths)]    
 
     statement_h = {
         # cases 3 < 0, 7 < 0;; deaths 3 < 0; 7 < 0
@@ -188,7 +205,7 @@ def is_it_better_yet(df, country=None):
         (True, True, False, True): 'The number of daily cases is decreasing, but there are early signs of an increase in daily deaths',
         (True, True, True, False): 'The number of daily cases is decreasing, and there are early signs of a decrease in daily deaths.',
         (True, True, True, True): 'The number of daily cases and the number of daily deaths is decreasing.',
-    }[(shortb.cases, longb.cases, shortb.deaths, longb.deaths)]
+    }[(trend.cases, absolute.cases, trend.deaths, absolute.deaths)]
 
     statements = {
         'cases': statement_c,
@@ -197,7 +214,7 @@ def is_it_better_yet(df, country=None):
     }
 
     
-    return status, indec[shortb.cases], indec[shortb.deaths], statements
+    return status, indec[trend.cases], indec[trend.deaths], statements
 
 
 
