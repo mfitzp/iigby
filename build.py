@@ -13,6 +13,7 @@ templateEnv = jinja2.Environment(loader=templateLoader)
 
 WINDOW_SIZE = 7
 
+import datetime as dt
 
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
@@ -44,8 +45,8 @@ cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
 
-# Calculate a 7-day rolling mean across the data.
-crd = cdf.rolling('7D').mean()
+# Calculate a 3-day rolling mean across the data to smooth.
+crd = cdf.rolling('3D').mean()
 
 # Calculate a 7-day rolling difference across the data.
 cfc = crd.rolling('7D').apply(lambda x: x.iloc[-1]-x.iloc[0])
@@ -127,7 +128,7 @@ def is_it_better_yet(df, country=None):
 
     total = df.sum()
 
-    WINDOW_SIZE = 5
+    WINDOW_SIZE = 7
 
     index = np.array(df[-WINDOW_SIZE:].index.values, dtype=float)
     window = df[-WINDOW_SIZE:]
@@ -149,6 +150,8 @@ def is_it_better_yet(df, country=None):
 
     # Absolute term is based on absolute drop.
     absolute = window.sum() <= 0
+
+    print(window.sum())
 
     indec = {
         True: 'down',
@@ -286,7 +289,6 @@ def status_card(country_name, status):
 
 # Generate the per-country html & plots.
 
-
 country_status = {}  # Build a list of countries and statuses, for sorted homepage table.
 
 template_c = templateEnv.get_template('country.html')
@@ -295,7 +297,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU']:
+    # if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA']:
     #    continue
     
     print(country_lookup[country_id])
@@ -354,6 +356,17 @@ html = template_h.render(
     statements=statements,
 )
 
-
 with open(os.path.join('build', 'index.html'), 'w') as f:
     f.write(html)
+
+sitemap = templateEnv.get_template('sitemap.xml')
+
+html = sitemap.render(
+    countries=country_lookup,
+    today=dt.datetime.today()
+)
+
+
+with open(os.path.join('build', 'sitemap.xml'), 'w') as f:
+    f.write(html)
+
