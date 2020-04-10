@@ -15,10 +15,17 @@ WINDOW_SIZE = 7
 
 
 from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib import font_manager as fm
+
 plt.style.use(['default', 'seaborn-poster', 'fivethirtyeight'])
 plt.rcParams["font.family"] = "Ubuntu Mono"
 
 
+font_dirs = ['./fonts', ]
+font_files = fm.findSystemFonts(fontpaths=font_dirs)
+for f in font_files:
+    fm.fontManager.addfont(f)
 
 
 df = pd.read_csv('covid-eucdc.csv', dtype={'geoId': str}, keep_default_na=False)
@@ -59,6 +66,7 @@ def plot(df, kind, country=None):
 
     plt.clf()
     ax = df.plot()
+    
     ax.axhline(0, lw=3, c='k', ls='--')
     
     x_start = df.index.values[-28]
@@ -218,6 +226,61 @@ def is_it_better_yet(df, country=None):
     return status, indec[trend.cases], indec[trend.deaths], statements
 
 
+def status_card(country_name, status):
+    bg, fg = {
+        'yes':   ('#66c2a5', '#ffffff'),
+        'no':    ('#d53e4f', '#000000'),
+        'uh oh': ('#d53e4f', '#ffffff'),
+        'maybe': ('#fee090', '#000000'),
+        'low':   ('#eeeeee', '#000000'),
+    }[status]
+
+    fig = Figure(figsize=(8,5))
+    ax = fig.add_subplot(1,1,1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_facecolor(bg)
+    
+    ax.text(
+        0.5, 
+        0.18, 
+        'Is Coronavirus getting better in '.upper(), 
+        fontname="Raleway",
+        size=12, 
+        color=fg, 
+        ha='center',
+        va='center',
+        transform=ax.transAxes,
+        alpha=0.8,
+    )
+
+    ax.text(
+        0.5, 
+        0.1, 
+        country_name, 
+        fontname="Raleway",
+        size=24, 
+        color=fg, 
+        ha='center',
+        va='center',
+        transform=ax.transAxes,
+        alpha=0.8,
+    )
+
+    ax.text(
+        0.5, 
+        0.5, 
+        status.upper(), 
+        size=100, 
+        color=fg, 
+        ha='center',
+        va='center',
+        weight='bold',
+        transform=ax.transAxes,
+        alpha=0.8,
+    )
+    
+    return fig
 
 
 
@@ -235,6 +298,8 @@ for country_id, country in country_lookup.items():
 
     #if country_id not in ['SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU']:
     #    continue
+    
+    #print(country_lookup[country_id])
 
     country_path = os.path.join('build', country_id.lower())
     pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)
@@ -247,6 +312,9 @@ for country_id, country in country_lookup.items():
     fig = plot(cfc, 'deaths', country_id)
     fig.savefig(os.path.join(country_path, 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
     
+    fig = status_card(country_lookup[country_id], status)
+    fig.savefig(os.path.join(country_path, 'card.png'), bbox_inches="tight")
+
     html = template_c.render(
         country_id=country_id,
         country=country,
@@ -273,6 +341,8 @@ fig.savefig(os.path.join('build', 'cases.png'), bbox_inches="tight", pad_inches=
 fig = plot(cfc, 'deaths')
 fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
 
+fig = status_card('The World', status)
+fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight")
 
 template_h = templateEnv.get_template('home.html')
 
