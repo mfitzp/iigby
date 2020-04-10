@@ -130,7 +130,7 @@ def is_it_better_yet(df, country=None):
         False: 'up',
     }
 
-    if total.cases < 100:
+    if total.cases < 50:
         return (
             "low",  # status when not enough data
             indec[shortb.cases], indec[shortb.deaths],
