@@ -20,8 +20,8 @@
         {% for c_id, c_data in country_status.items() %}
         <tr>
             <td><a href="/{{ c_id|lower }}">{{ countries[c_id] }}</a></td>
-            <td class="center"><span class="rate rate-label {{ c_data.cases|replace(' ','_') }}"></span></td>
-            <td class="center"><span class="rate rate-label {{ c_data.deaths|replace(' ','_') }}"></span></td>
+            <td class="center"><span class="hide">{{ c_data.cases }}</span><span class="rate rate-label {{ c_data.cases|replace(' ','_') }}"></span></td>
+            <td class="center"><span class="hide">{{ c_data.deaths }}</span><span class="rate rate-label {{ c_data.deaths|replace(' ','_') }}"></span></td>
             <td class="center"><span class="status status-label {{ c_data.status|replace(' ','_') }}">{{ c_data.status }}</span></td>
 
         </tr>

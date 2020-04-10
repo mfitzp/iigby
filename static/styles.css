@@ -27,6 +27,8 @@ h3 {
     max-width: 900px;
 }
 
+.hide { display: none;}
+
 .header {
     text-align: center;
 }
@@ -38,7 +40,7 @@ h3 {
 }
 
 .status-banner {
-    font-size: 12rem;
+    font-size: 9rem;
     padding: 5rem 0rem;
     text-align: center;
     font-weight: bold;
