@@ -44,6 +44,7 @@ cdf = df.set_index('dateRep')
 cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
+cdf = cdf[-28:]
 
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
