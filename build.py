@@ -45,11 +45,13 @@ cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
 
-# Calculate a 3-day rolling mean across the data to smooth.
-crd = cdf.rolling('3D').mean()
+# Calculate a 7-day rolling mean across the data to smooth.
+crd = cdf.rolling(7, center=True, min_periods=1).mean()
 
-# Calculate a 7-day rolling difference across the data.
-cfc = crd.rolling('7D').apply(lambda x: x.iloc[-1]-x.iloc[0])
+# Calculate a 7-day rolling difference across the data, smooth the result.
+cfc = crd.rolling(7).apply(lambda x: x.iloc[-1]-x.iloc[0])
+cfc = cfc.fillna(0)
+cfc = cfc.rolling(3, center=True, min_periods=1).mean()
 
 ###########
 #### cfc is our final dataset, generate output.
@@ -200,18 +202,18 @@ def is_it_better_yet(df, country=None):
         (False, False, True, False): 'The number of daily cases is increasing, but there are signs of an decrease in daily deaths.',
         (False, False, True, True): 'The number of daily cases is increasing, but the number of daily deaths is decreasing.',
 
-        (False, True, False, False): 'There are early signs of an acceleration in daily cases, and daily deaths are increasing.',
-        (False, True, False, True): 'There are early signs of an acceleration in daily cases and deaths.',
-        (False, True, True, False): 'There are early signs of an acceleration in daily cases, but there are signs of an decrease in daily deaths.',
-        (False, True, True, True): 'There are early signs of an acceleration in daily cases, but daily deaths continue to fall.',
+        (False, True, False, False): 'There are signs of an acceleration in daily cases, and daily deaths are increasing.',
+        (False, True, False, True): 'There are signs of an acceleration in daily cases and deaths.',
+        (False, True, True, False): 'There are signs of an acceleration in daily cases, but there are signs of an decrease in daily deaths.',
+        (False, True, True, True): 'There are signs of an acceleration in daily cases, but daily deaths continue to fall.',
 
-        (True, False, False, False): 'There are early signs of a deceleration in daily cases. However, daily deaths are still increasing.',
-        (True, False, False, True): 'There are early signs of a deceleration in daily cases, although there are signs of an increase in daily deaths.',
-        (True, False, True, False): 'There are early signs of a deceleration in daily cases and daily deaths',
-        (True, False, True, True): 'There are early signs of a deceleration in daily cases, and daily deaths continue to fall.',
+        (True, False, False, False): 'There are signs of a deceleration in daily cases. However, daily deaths are still increasing.',
+        (True, False, False, True): 'There are signs of a deceleration in daily cases, although there are signs of an increase in daily deaths.',
+        (True, False, True, False): 'There are signs of a deceleration in daily cases and daily deaths.',
+        (True, False, True, True): 'There are signs of a deceleration in daily cases, and daily deaths continue to fall.',
 
         (True, True, False, False): 'While the number of daily deaths is still increasing, the number of daily cases is decreasing.',
-        (True, True, False, True): 'The number of daily cases is decreasing, but there are early signs of an increase in daily deaths',
+        (True, True, False, True): 'The number of daily cases is decreasing, but there are early signs of an increase in daily deaths.',
         (True, True, True, False): 'The number of daily cases is decreasing, and there are early signs of a decrease in daily deaths.',
         (True, True, True, True): 'The number of daily cases and the number of daily deaths is decreasing.',
     }[(trend.cases, absolute.cases, trend.deaths, absolute.deaths)]
@@ -295,8 +297,8 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
-    #    continue
+    if country_id not in ['CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
+        continue
     
     print(country_lookup[country_id])
 
