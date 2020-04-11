@@ -184,39 +184,39 @@ def is_it_better_yet(df, country=None):
     statement_c = {
         # 3 < 0, 7 < 0
         (False, False): 'The number of daily cases is increasing day by day.',
-        (False, True): 'There are early signs of an increase in daily cases.',
-        (True, False): 'There are early signs of a decrease in daily cases.',
+        (False, True): 'There are signs of an acceleration in daily cases.',
+        (True, False): 'There are signs of an deceleration in daily cases.',
         (True, True): 'The number of daily cases is falling.'
     }[(trend.cases, absolute.cases)]
 
     statement_d = {
         # 3 < 0, 7 < 0
         (False, False): 'The number of daily deaths is increasing day by day.',
-        (False, True): 'There are early signs of an increase in daily deaths.',
-        (True, False): 'There are early signs of a decrease in daily deaths.',
+        (False, True): 'There are signs of an acceleration in daily deaths.',
+        (True, False): 'There are signs of an deceleration in daily deaths.',
         (True, True): 'The number of daily deaths is falling.'
     }[(trend.deaths, absolute.deaths)]    
 
     statement_h = {
         # cases 3 < 0, 7 < 0;; deaths 3 < 0; 7 < 0
         (False, False, False, False):'The number of daily cases and the number of daily deaths is still increasing.',
-        (False, False, False, True): 'The number of daily cases is increasing. There are signs of an increase in daily deaths.',
-        (False, False, True, False): 'The number of daily cases is increasing, but there are signs of an decrease in daily deaths.',
+        (False, False, False, True): 'The number of daily cases is increasing. There are signs of an acceleration in daily deaths.',
+        (False, False, True, False): 'The number of daily cases is increasing, but there are signs of a deceleration in daily deaths.',
         (False, False, True, True): 'The number of daily cases is increasing, but the number of daily deaths is decreasing.',
 
         (False, True, False, False): 'There are signs of an acceleration in daily cases, and daily deaths are increasing.',
         (False, True, False, True): 'There are signs of an acceleration in daily cases and deaths.',
-        (False, True, True, False): 'There are signs of an acceleration in daily cases, but there are signs of an decrease in daily deaths.',
+        (False, True, True, False): 'There are signs of an acceleration in daily cases, but there are signs of a deceleration in daily deaths.',
         (False, True, True, True): 'There are signs of an acceleration in daily cases, but daily deaths continue to fall.',
 
         (True, False, False, False): 'There are signs of a deceleration in daily cases. However, daily deaths are still increasing.',
-        (True, False, False, True): 'There are signs of a deceleration in daily cases, although there are signs of an increase in daily deaths.',
+        (True, False, False, True): 'There are signs of a deceleration in daily cases, although there are signs of an acceleration in daily deaths.',
         (True, False, True, False): 'There are signs of a deceleration in daily cases and daily deaths.',
         (True, False, True, True): 'There are signs of a deceleration in daily cases, and daily deaths continue to fall.',
 
         (True, True, False, False): 'While the number of daily deaths is still increasing, the number of daily cases is decreasing.',
-        (True, True, False, True): 'The number of daily cases is decreasing, but there are early signs of an increase in daily deaths.',
-        (True, True, True, False): 'The number of daily cases is decreasing, and there are early signs of a decrease in daily deaths.',
+        (True, True, False, True): 'The number of daily cases is decreasing, but there are signs of an acceleration in daily deaths.',
+        (True, True, True, False): 'The number of daily cases is decreasing, and there are signs of a deceleration in daily deaths.',
         (True, True, True, True): 'The number of daily cases and the number of daily deaths is decreasing.',
     }[(trend.cases, absolute.cases, trend.deaths, absolute.deaths)]
 
