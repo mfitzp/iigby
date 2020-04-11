@@ -12,6 +12,7 @@ templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
 templateEnv = jinja2.Environment(loader=templateLoader)
 
 WINDOW_SIZE = 7
+DISPLAY_WEEKS = 4
 
 import datetime as dt
 
@@ -44,7 +45,7 @@ cdf = df.set_index('dateRep')
 cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
-cdf = cdf[-(7*6):]  # 6 weeks
+cdf = cdf[-7*(DISPLAY_WEEKS+1):]  # display +1 week for initial smoothing
 
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
@@ -72,7 +73,7 @@ def plot(df, kind, country=None):
     
     ax.axhline(0, lw=3, c='k', ls='--')
     
-    x_start = df.index.values[-28]
+    x_start = df.index.values[-DISPLAY_WEEKS*7]
     
     # Default plot to last 28 days (ish)
     ax.set_xlim(x_start, df.index.values[-1])
