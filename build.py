@@ -58,7 +58,6 @@ cdf = df.set_index('dateRep')
 cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
-cdf = cdf[-7*(DISPLAY_WEEKS+1):]  # display +1 week for initial smoothing
 
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
@@ -81,15 +80,13 @@ def plot(df, kind, country=None):
         df = df.xs(kind, level=1, axis=1, drop_level=False)
         df = df.sum(axis=1)
 
+    # Default plot to last 28 days (ish)
+    df = df[-7*DISPLAY_WEEKS:]  # display +1 week for initial smoothing
+
     plt.clf()
     ax = df.plot()
-    
+        
     ax.axhline(0, lw=3, c='k', ls='--')
-    
-    x_start = df.index.values[-DISPLAY_WEEKS*7]
-    
-    # Default plot to last 28 days (ish)
-    ax.set_xlim(x_start, df.index.values[-1])
     
     ylim_top = np.max(df.values) * 1.2
     ylim_bot = np.max(-df.values) * 1.2
@@ -98,8 +95,6 @@ def plot(df, kind, country=None):
     if ylim_max > 0:
         ax.set_ylim(-np.mean([ylim_bot, ylim_bot, ylim_max]), np.mean([ylim_top, ylim_top, ylim_max]))
     
-    #ylim = np.max(np.abs(df.values)) *1.2
-    #ax.set_ylim(-ylim, ylim)
     ax.set_ylabel('Daily rate change vs. Previous week')
     ax.set_xlabel('')
     
@@ -312,7 +307,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['CZ', 'CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
+    #if country_id not in ['CN', 'NO', 'CZ', 'CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
     #    continue
     
     print(country_lookup[country_id])
