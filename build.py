@@ -304,6 +304,8 @@ def status_map(country_status):
     world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
     # Fix, weird
     world.loc[ world['name'] == 'France', 'iso_a3'] = 'FRA'
+    world.loc[ world['name'] == 'Norway', 'iso_a3'] = 'NOR'
+    world.loc[ world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
 
     scale_map = {
         'yes':0, 'maybe':1, 'no':2, "uh oh":3, 'tbc':4
