@@ -358,8 +358,8 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    if country_id not in ['CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
-        continue
+    #if country_id not in ['CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
+    #    continue
     
     print(country_lookup[country_id])
 
