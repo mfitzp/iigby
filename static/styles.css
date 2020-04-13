@@ -40,10 +40,26 @@ h3 {
 }
 
 .status-banner {
+    position: relative;
     font-size: 9rem;
     padding: 5rem 0rem;
     text-align: center;
     font-weight: bold;
+}
+
+.share {
+    position: absolute;
+    display: block;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: #fff;
+    opacity: 0.4;
+}
+
+.share:hover {
+    opacity: 1;
+
 }
 
 .status-label {

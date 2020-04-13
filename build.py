@@ -214,8 +214,8 @@ def is_it_better_yet(df, country=None):
         # cases 3 < 0, 7 < 0;; deaths 3 < 0; 7 < 0
         (False, False, False, False):'The number of daily cases and the number of daily deaths is still increasing.',
         (False, False, False, True): 'The number of daily cases is increasing. There are signs of an acceleration in daily deaths.',
-        (False, False, True, False): 'The number of daily cases is increasing, but there are signs of a deceleration in daily deaths.',
-        (False, False, True, True): 'The number of daily cases is increasing, but the number of daily deaths is decreasing.',
+        (False, False, True, False): 'The number of daily cases is increasing although there are signs of a deceleration in daily deaths.',
+        (False, False, True, True): 'The number of daily cases is increasing although the number of daily deaths is decreasing.',
 
         (False, True, False, False): 'There are signs of an acceleration in daily cases, and daily deaths are increasing.',
         (False, True, False, True): 'There are signs of an acceleration in daily cases and deaths.',
