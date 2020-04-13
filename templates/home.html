@@ -1,11 +1,62 @@
 {% extends 'country.html' %}
 
+{% block map %}
+
+<div class="pure-u-1-1 map">
+   
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.9/topojson.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.all.min.js"></script>
+<div id="container"></div>
+<script>
+    var map = new Datamap({
+        element: document.getElementById("container"),
+        projection: 'mercator',
+        responsive: true,
+        geographyConfig: {
+            highlightOnHover: false,
+            popupTemplate: function(geography, data) {
+                return '<div class="hoverinfo">' + geography.properties.name + ' <span class="status status-hover ' + data.fillKey + '">' + data.status + '</span></div>'
+            },        
+        },
+        fills: {
+            defaultFill: "#fff", // Hide where we have no data.
+            yes: "#66c2a5",
+             no: "#d53e4f",
+          uh_oh: "#863ed5",
+          maybe: "#fee090",
+            tbc: "#eeeeee",
+        },
+        data: {
+            {% for c_id, c_data in country_status.items() %}
+                {% if tlacountries[c_id] %}{{ tlacountries[c_id] }}: { fillKey: '{{ c_data.slug }}', geoId: '{{ c_id|lower }}', status: '{{ c_data.status }}'   },{% endif %}
+            {% endfor %}
+        },
+        done: function(datamap) {
+            datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+                link = '/' + datamap.options.data[geography.id].geoId + '/'
+                console.log(link);
+                location.href = link;
+            });
+        },
+
+   });
+
+    window.addEventListener('resize', function(event){
+        map.resize();
+    });
+</script>
+
+</div>
+
+{% endblock %}
+
 
 {% block table %}
 
 <div class="pure-u-1-1 table">
+    <h3>Current status by country</h3>
 
-<h3>Current status by country</h3>
 <table class="pure-table pure-table-horizontal" id="world">
     <thead>
         <tr>
@@ -37,7 +88,7 @@
     <li><span class="status status-label maybe">maybe</span> There are early indications of a fall in cases/day.</li>
     <li><span class="status status-label no">no</span> The number of cases/day is rising.</li>
     <li><span class="status status-label uh_oh">uh oh</span> There are early indications of a rebound in cases/day.</li>
-    <li><span class="status status-label low">low</span> Not enough data (<100 cases total). </li>
+    <li><span class="status status-label tbc">tbc</span> Not enough data (<50 cases total). </li>
 
 </ul>
 </div>
@@ -50,7 +101,7 @@ $(function() {
         sortList: [[3,0], [0,0]],
         textSorter : function(a, b, direction, columnIndex, table) {
             if (columnIndex == 3) {
-                var map = {yes:0, maybe:1, no:2, "uh oh":3, low:4},
+                var map = {yes:0, maybe:1, no:2, "uh oh":3, tbc:4},
                     diff = map[a] - map[b];
 
                 if (diff < 0) {
@@ -70,5 +121,16 @@ $(function() {
     
 </script>
 
+
+{% endblock %}
+
+
+
+{% block status %}
+
+<div class="pure-u-1-1">
+    <h3>Global Status <span class="status-label status {{ status|replace(' ','_') }}">{{ status }}</span></h3>
+    <p class="statement">{{ statements.headline }}</p>
+</div>
 
 {% endblock %}

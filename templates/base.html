@@ -2,13 +2,13 @@
 <html>
 <head>
 
-<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+<link rel="stylesheet" href="//unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 <link rel="stylesheet" href="/styles.css">
 
-<script src="https://code.jquery.com/jquery-latest.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha256-dtGH1XcAyKopMui5x20KnPxuGuSx9Rs6piJB/4Oqu6I=" crossorigin="anonymous"></script>
+<script src="//code.jquery.com/jquery-latest.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha256-dtGH1XcAyKopMui5x20KnPxuGuSx9Rs6piJB/4Oqu6I=" crossorigin="anonymous"></script>
 
-<title>{{ country}} Coronavirus | Is it getting better yet? An optimistic view of the Coronavirus pandemic</title>
+<title>{{ country}} Coronavirus | Is it getting better yet? A visual guide to the Coronavirus pandemic</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -48,9 +48,11 @@
 <body>
     <div class="pure-g page">
 
-
+        
+    {% block header %}
         <div class="pure-u-1-1 header">
-            <h1>Is <span class="corona">Corona</span> getting better yet?</h1>
+            <h1>Is <span class="corona">COVID-19</span> getting better yet?</h1>
+
             <select class="country_chooser">
                     <option value="">World</option>
                 {% for c_id, c_name in countries.items() %}
@@ -58,13 +60,20 @@
                 {% endfor %}
             </select>
             
-            </div>
-
-
-
-    {% block body %}
+        </div>
     {% endblock %}
+
+    {% block map %}
+    {% endblock %}
+
     {% block table %}
+    {% endblock %}
+
+    {% block status %}
+    {% endblock %}
+
+
+    {% block data %}
     {% endblock %}
 
     <div class="pure-g author l-box">

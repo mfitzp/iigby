@@ -8,11 +8,13 @@ import pathlib
 import jinja2
 from jinja2 import Template
 
-templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
-templateEnv = jinja2.Environment(loader=templateLoader)
-
 WINDOW_SIZE = 7
 DISPLAY_WEEKS = 4
+LOW_CUTOFF = 50
+
+
+templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
+templateEnv = jinja2.Environment(loader=templateLoader)
 
 import datetime as dt
 
@@ -39,6 +41,17 @@ country_lookup = {}
 for country, geoId in df[['countriesAndTerritories', 'geoId']].values:
     if len(geoId) == 2:
         country_lookup[geoId] = country.replace('_', ' ')
+
+# Lookup for dynamic map.
+tla_country_lookup = {}
+for tlcc, geoId in df[['countryterritoryCode', 'geoId']].values:
+    if len(geoId) == 2:
+        tla_country_lookup[geoId] = tlcc.replace('_', ' ')
+
+# Fixes/additions
+tla_country_lookup['CZ'] = 'CZE'
+
+
 
 # Regroup by country code.
 cdf = df.set_index('dateRep')
@@ -160,9 +173,9 @@ def is_it_better_yet(df, country=None):
         False: 'up',
     }
 
-    if total.cases < 50:
+    if total.cases < LOW_CUTOFF:
         return (
-            "low",  # status when not enough data
+            "tbc",  # status when not enough data
             indec[trend.cases], indec[absolute.deaths],
             {
             'cases':"There are too few cases to get an accurate picture. But no news may be good news.",  # cases
@@ -234,9 +247,9 @@ def status_card(country_name, status):
     bg, fg = {
         'yes':   ('#66c2a5', '#ffffff'),
         'no':    ('#d53e4f', '#000000'),
-        'uh oh': ('#d53e4f', '#ffffff'),
+        'uh oh': ('#863ed5', '#ffffff'),
         'maybe': ('#fee090', '#000000'),
-        'low':   ('#eeeeee', '#000000'),
+        'tbc':   ('#eeeeee', '#000000'),
     }[status]
 
     fig = Figure(figsize=(8,4))
@@ -299,7 +312,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
+    #if country_id not in ['CZ', 'CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
     #    continue
     
     print(country_lookup[country_id])
@@ -328,6 +341,7 @@ for country_id, country in country_lookup.items():
 
     country_status[country_id] = {
         'status': status,
+        'slug': status.replace(' ', '_'),
         'cases': cases,
         'deaths': deaths
     }
@@ -354,6 +368,7 @@ html = template_h.render(
     country="World",
     countries=country_lookup,
     country_status=country_status,
+    tlacountries=tla_country_lookup,
     status=status,
     statements=statements,
 )
@@ -363,12 +378,11 @@ with open(os.path.join('build', 'index.html'), 'w') as f:
 
 sitemap = templateEnv.get_template('sitemap.xml')
 
-html = sitemap.render(
+xml = sitemap.render(
     countries=country_lookup,
     today=dt.datetime.today()
 )
 
-
 with open(os.path.join('build', 'sitemap.xml'), 'w') as f:
-    f.write(html)
+    f.write(xml)
 

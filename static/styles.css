@@ -51,6 +51,10 @@ h3 {
     font-size: 0.9rem;
 }
 
+.status-hover {
+    padding: 0.25em 1em;
+}
+
 .status {
     background-color: #eee;
     text-transform: uppercase;
@@ -79,7 +83,7 @@ h3 {
 }
 
 .status.uh_oh {
-    background-color:#d53e4f; 
+    background-color:#863ed5; 
     color:  rgba(255, 255, 255, 0.8);
 }
 
@@ -169,3 +173,4 @@ ol {
     line-height: 2rem;
     margin: auto;
 }
+
