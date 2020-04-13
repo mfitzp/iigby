@@ -8,6 +8,16 @@ import pathlib
 import jinja2
 from jinja2 import Template
 
+import geopandas
+from matplotlib.colors import ListedColormap, Normalize
+
+import datetime as dt
+
+from matplotlib import pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib import font_manager as fm
+
+
 WINDOW_SIZE = 7
 DISPLAY_WEEKS = 4
 LOW_CUTOFF = 50
@@ -16,11 +26,6 @@ LOW_CUTOFF = 50
 templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
 templateEnv = jinja2.Environment(loader=templateLoader)
 
-import datetime as dt
-
-from matplotlib import pyplot as plt
-from matplotlib.figure import Figure
-from matplotlib import font_manager as fm
 
 plt.style.use(['default', 'seaborn-poster', 'fivethirtyeight'])
 
@@ -50,8 +55,7 @@ for tlcc, geoId in df[['countryterritoryCode', 'geoId']].values:
 
 # Fixes/additions
 tla_country_lookup['CZ'] = 'CZE'
-
-
+tla_reverse = {a:b for b, a in tla_country_lookup.items()}
 
 # Regroup by country code.
 cdf = df.set_index('dateRep')
@@ -296,6 +300,53 @@ def status_card(country_name, status):
 
 
 
+def status_map(country_status):
+    world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
+    # Fix, weird
+    world.loc[ world['name'] == 'France', 'iso_a3'] = 'FRA'
+
+    scale_map = {
+        'yes':0, 'maybe':1, 'no':2, "uh oh":3, 'tbc':4
+    }
+    
+    cmap = ListedColormap(['#66c2a5', '#fee090', '#d53e4f', '#863ed5', '#eeeeee'])
+    norm = Normalize(vmin=0, vmax=4)
+
+
+    def get_status_for_tla(tla):
+        geoId = tla_reverse.get(tla)
+        data = country_status.get(geoId)
+
+        if data:
+            return scale_map[data['status']]
+
+        return np.nan
+
+    world['status'] = [get_status_for_tla(tla) for tla in world['iso_a3']]
+
+    world = world[(world.name != "Antarctica") & (world.name != "Fr. S. Antarctic Lands")]
+    world = world.to_crs("EPSG:3395") # world.to_crs(epsg=3395) would also work
+    ax = world.plot(column='status', cmap=cmap, norm=norm, missing_kwds={'color': '#eeeeee'})
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_facecolor('#ffffff')
+
+    ax.text(
+        0.5, 
+        0.05, 
+        'isitgettingbetteryet.com', 
+        fontname="Raleway",
+        size=12, 
+        color='#000000', 
+        ha='center',
+        va='center',
+        transform=ax.transAxes,
+        alpha=0.8,
+    )
+
+    return ax.figure
+
+
 
 # Generate the per-country html & plots.
 
@@ -307,8 +358,8 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['CN', 'NO', 'CZ', 'CH', 'CR', 'UY', 'LB','DO', 'SM', 'NL', 'IT', 'UK', 'ES', 'US', 'DE', 'MA', 'MU', 'ZA', 'AD']:
-    #    continue
+    if country_id not in ['CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
+        continue
     
     print(country_lookup[country_id])
 
@@ -355,6 +406,9 @@ fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches
 
 fig = status_card('The World', status)
 fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight")
+
+fig = status_map(country_status)
+fig.savefig(os.path.join('build', 'map.png'), bbox_inches="tight")
 
 template_h = templateEnv.get_template('home.html')
 

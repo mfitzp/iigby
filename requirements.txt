@@ -3,3 +3,5 @@ pandas
 numpy
 jinja2
 scipy
+geopandas
+descartes
