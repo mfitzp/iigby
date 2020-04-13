@@ -375,7 +375,7 @@ for country_id, country in country_lookup.items():
     fig.savefig(os.path.join(country_path, 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
     
     fig = status_card(country_lookup[country_id], status)
-    fig.savefig(os.path.join(country_path, 'card.png'), bbox_inches="tight")
+    fig.savefig(os.path.join(country_path, 'card.png'), bbox_inches="tight", pad_inches=0)
 
     html = template_c.render(
         country_id=country_id,
@@ -405,10 +405,10 @@ fig = plot(cfc, 'deaths')
 fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
 
 fig = status_card('The World', status)
-fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight")
+fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight", pad_inches=0)
 
 fig = status_map(country_status)
-fig.savefig(os.path.join('build', 'map.png'), bbox_inches="tight")
+fig.savefig(os.path.join('build', 'map.png'), bbox_inches="tight", pad_inches=0)
 
 template_h = templateEnv.get_template('home.html')
 
