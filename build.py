@@ -63,6 +63,9 @@ cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
 
+# Get latest date from df.
+updated = pd.to_datetime(max(cdf.index.values))
+
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
 
@@ -303,10 +306,11 @@ def status_card(country_name, status):
 def status_map(country_status):
     world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
     # Fix, weird
-    world.loc[ world['name'] == 'France', 'iso_a3'] = 'FRA'
-    world.loc[ world['name'] == 'Norway', 'iso_a3'] = 'NOR'
-    world.loc[ world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
-
+    world.loc[world['name'] == 'France', 'iso_a3'] = 'FRA'
+    world.loc[world['name'] == 'Norway', 'iso_a3'] = 'NOR'
+    world.loc[world['name'] == 'Somaliland', 'iso_a3'] = 'SOM'
+    world.loc[world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
+    
     scale_map = {
         'yes':0, 'maybe':1, 'no':2, "uh oh":3, 'tbc':4
     }
@@ -360,7 +364,7 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
+    #if country_id not in ['NL', 'CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
     #    continue
     
     print(country_lookup[country_id])
@@ -385,6 +389,7 @@ for country_id, country in country_lookup.items():
         countries=country_lookup,
         status=status,
         statements=statements,
+        updated=updated,        
     )
 
     country_status[country_id] = {
@@ -422,6 +427,7 @@ html = template_h.render(
     tlacountries=tla_country_lookup,
     status=status,
     statements=statements,
+    updated=updated,
 )
 
 with open(os.path.join('build', 'index.html'), 'w') as f:

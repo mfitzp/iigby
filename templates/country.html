@@ -14,6 +14,15 @@
 <div class="pure-u-1-1 statement">
 <p>{{ statements.headline }}</p>
 </div>
+
+<div class="pure-u-1-1 updated">
+    <p>
+        Data sourced from the 
+        <a href="https://www.ecdc.europa.eu/en/publications-data">European Centre for Disease Control</a>.
+        Last updated {{ updated.strftime('%A %-d %B') }}.
+    </p>
+</div>
+
 {% endblock %}
 
 {% block data %}
