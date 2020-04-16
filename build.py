@@ -72,7 +72,7 @@ crd = cdf.rolling(7, center=True, min_periods=1).mean()
 # Calculate a 7-day rolling difference across the data, smooth the result.
 cfc = crd.rolling(7).apply(lambda x: x.iloc[-1]-x.iloc[0])
 cfc = cfc.fillna(0)
-cfc = cfc.rolling(7, center=True, min_periods=1).mean()
+cfc = cfc.rolling(3, center=True, min_periods=1).mean()
 
 ###########
 #### cfc is our final dataset, generate output.
