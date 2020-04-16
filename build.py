@@ -190,11 +190,34 @@ def is_it_better_yet(df, country=None):
 
     status = {
         # 3 < 0, 7 < 0
-        (False, False): 'no',
-        (False, True): 'uh oh',
-        (True, False): 'maybe',
-        (True, True): 'yes'
-    }[(trend.cases, absolute.cases)]
+        # trend.cases, absolute.cases, trend.deaths, absolute.deaths
+        # True = getting better, False = not
+        # yes
+        (True, True, True, True): 'yes',
+        (True, False, True, True): 'yes',
+        (True, True, False, True): 'yes',
+
+        # maybe
+        (True, True, True, False): 'maybe',
+        (True, False, True, False): 'maybe',
+        (False, False, True, True): 'maybe',
+        (False, False, True, False): 'maybe',
+
+        # no
+        (True, True, False, False): 'no',
+        (True, False, False, False): 'no',
+        (False, False, False, False): 'no',
+
+        # uh oh
+        (True, False, False, True): 'uh oh',
+        (False, True, False, False): 'uh oh',
+        (False, True, False, True): 'uh oh',
+        (False, True, True, False): 'uh oh',
+        (False, True, True, True): 'uh oh',
+        (False, False, False, True): 'uh oh',
+
+
+    }[(trend.cases, absolute.cases, trend.deaths, absolute.deaths)]
 
     statement_c = {
         # 3 < 0, 7 < 0
@@ -364,15 +387,15 @@ template_c = templateEnv.get_template('country.html')
 
 for country_id, country in country_lookup.items():
 
-    #if country_id not in ['NL', 'CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
+    #if country_id not in ['NL','CN','FR']: #'NL', 'CN', 'FR', 'NO', 'CZ', 'CH', 'US', 'UK', 'ES', 'CA', 'AU', 'NZ']:
     #    continue
     
-    print(country_lookup[country_id])
-
     country_path = os.path.join('build', country_id.lower())
     pathlib.Path(country_path).mkdir(parents=True, exist_ok=True)
 
     status, cases, deaths, statements = is_it_better_yet(cfc, country_id)
+
+    print("{}: {}".format(country_lookup[country_id], status))
 
     fig = plot(cfc, 'cases', country_id)
     fig.savefig(os.path.join(country_path, 'cases.png'), bbox_inches="tight", pad_inches=0.5)
@@ -382,6 +405,11 @@ for country_id, country in country_lookup.items():
     
     fig = status_card(country_lookup[country_id], status)
     fig.savefig(os.path.join(country_path, 'card.png'), bbox_inches="tight", pad_inches=0)
+
+    # Generate 320x240 for Pi screen.
+    fig.set_size_inches(320/48, 240/48)
+    fig.axes[0].set_aspect(aspect=240/320)
+    fig.savefig(os.path.join(country_path, 'card_320x240.png'), bbox_inches="tight", pad_inches=0)
 
     html = template_c.render(
         country_id=country_id,
@@ -414,8 +442,19 @@ fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches
 fig = status_card('The World', status)
 fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight", pad_inches=0)
 
+# Generate 320x240 for Pi screen.
+fig.set_size_inches(320/48, 240/48)
+fig.axes[0].set_aspect(aspect=240/320)
+fig.savefig(os.path.join('build', 'card_320x240.png'), bbox_inches="tight", pad_inches=0)
+
 fig = status_map(country_status)
 fig.savefig(os.path.join('build', 'map.png'), bbox_inches="tight", pad_inches=0)
+
+# Generate 320x240 for Pi screen.
+fig.axes[0].texts[0].set_visible(False)
+fig.set_size_inches(320/24, 240/24)
+fig.axes[0].set_aspect(aspect=320/240)
+fig.savefig(os.path.join('build', 'map_320x240.png'), bbox_inches="tight", pad_inches=0)
 
 template_h = templateEnv.get_template('home.html')
 

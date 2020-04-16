@@ -185,7 +185,7 @@ a {
 
 ol {
     list-style: none;
-    max-width: 500px;
+    max-width: 35rem;
     line-height: 2rem;
     margin: auto;
 }
