@@ -203,19 +203,19 @@ def is_it_better_yet(df, country=None):
         (False, False, True, True): 'maybe',
         (False, False, True, False): 'maybe',
 
+        (False, True, True, False): 'maybe',
+        (False, True, True, True): 'maybe',
+
         # no
         (True, True, False, False): 'no',
         (True, False, False, True): 'no',
         (True, False, False, False): 'no',
-        (False, False, False, False): 'no',
 
         # uh oh
+        (False, False, False, False): 'uh oh',
         (False, True, False, False): 'uh oh',
         (False, True, False, True): 'uh oh',
-        (False, True, True, False): 'uh oh',
-        (False, True, True, True): 'uh oh',
         (False, False, False, True): 'uh oh',
-
 
     }[(trend.cases, absolute.cases, trend.deaths, absolute.deaths)]
 
@@ -237,7 +237,7 @@ def is_it_better_yet(df, country=None):
 
     statement_h = {
         # cases 3 < 0, 7 < 0;; deaths 3 < 0; 7 < 0
-        (False, False, False, False):'The number of daily cases and the number of daily deaths is still increasing.',
+        (False, False, False, False):'The number of daily cases and the number of daily deaths is increasing.',
         (False, False, False, True): 'The number of daily cases is increasing. There are signs of an acceleration in daily deaths.',
         (False, False, True, False): 'The number of daily cases is increasing although there are signs of a deceleration in daily deaths.',
         (False, False, True, True): 'The number of daily cases is increasing although the number of daily deaths is decreasing.',
@@ -247,12 +247,12 @@ def is_it_better_yet(df, country=None):
         (False, True, True, False): 'There are signs of an acceleration in daily cases, but there are signs of a deceleration in daily deaths.',
         (False, True, True, True): 'There are signs of an acceleration in daily cases, but daily deaths continue to fall.',
 
-        (True, False, False, False): 'There are signs of a deceleration in daily cases. However, daily deaths are still increasing.',
+        (True, False, False, False): 'There are signs of a deceleration in daily cases. However, daily deaths are increasing.',
         (True, False, False, True): 'There are signs of a deceleration in daily cases. However, there are also signs of an acceleration in daily deaths.',
         (True, False, True, False): 'There are signs of a deceleration in daily cases and daily deaths.',
         (True, False, True, True): 'There are signs of a deceleration in daily cases, and daily deaths continue to fall.',
 
-        (True, True, False, False): 'While the number of daily cases is decreasing, the number of daily deaths is still increasing.',
+        (True, True, False, False): 'While the number of daily cases is decreasing, the number of daily deaths is increasing.',
         (True, True, False, True): 'The number of daily cases is decreasing, but there are signs of an acceleration in daily deaths.',
         (True, True, True, False): 'The number of daily cases is decreasing, and there are signs of a deceleration in daily deaths.',
         (True, True, True, True): 'The number of daily cases and the number of daily deaths is decreasing.',
