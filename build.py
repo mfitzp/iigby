@@ -205,11 +205,11 @@ def is_it_better_yet(df, country=None):
 
         # no
         (True, True, False, False): 'no',
+        (True, False, False, True): 'no',
         (True, False, False, False): 'no',
         (False, False, False, False): 'no',
 
         # uh oh
-        (True, False, False, True): 'uh oh',
         (False, True, False, False): 'uh oh',
         (False, True, False, True): 'uh oh',
         (False, True, True, False): 'uh oh',
@@ -248,7 +248,7 @@ def is_it_better_yet(df, country=None):
         (False, True, True, True): 'There are signs of an acceleration in daily cases, but daily deaths continue to fall.',
 
         (True, False, False, False): 'There are signs of a deceleration in daily cases. However, daily deaths are still increasing.',
-        (True, False, False, True): 'There are signs of a deceleration in daily cases, although there are signs of an acceleration in daily deaths.',
+        (True, False, False, True): 'There are signs of a deceleration in daily cases. However, there are also signs of an acceleration in daily deaths.',
         (True, False, True, False): 'There are signs of a deceleration in daily cases and daily deaths.',
         (True, False, True, True): 'There are signs of a deceleration in daily cases, and daily deaths continue to fall.',
 
