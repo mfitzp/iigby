@@ -6,7 +6,7 @@
     
 <link rel="stylesheet" href="//unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="/iigby/styles.css">
 
 <script src="//code.jquery.com/jquery-latest.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha256-dtGH1XcAyKopMui5x20KnPxuGuSx9Rs6piJB/4Oqu6I=" crossorigin="anonymous"></script>
@@ -120,11 +120,11 @@ $(function() {
     $('.country_chooser').change(function() {
         var selected = $(this).children("option:selected").val();
         if (selected) {
-            window.location.href = ('/' + selected.toLowerCase() + '/')
+            window.location.href = ('/iigby/' + selected.toLowerCase() + '/')
 
         } else {
             // World, top level
-            window.location.href = ('/')
+            window.location.href = ('/iigby/')
         }
     })
 });
