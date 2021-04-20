@@ -30,7 +30,7 @@
         },
         data: {
             {% for c_id, c_data in country_status.items() %}
-                {% if countries[c_id] %}{{ countries[c_id] }}: { fillKey: '{{ c_data.slug }}', geoId: '{{ c_id|lower }}', status: '{{ c_data.status }}'   },{% endif %}
+                {{ c_id }}: { fillKey: '{{ c_data.slug }}', geoId: '{{ c_id|lower }}', status: '{{ c_data.status }}'   },
             {% endfor %}
         },
         done: function(datamap) {

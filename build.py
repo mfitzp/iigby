@@ -59,7 +59,7 @@ country_reverse = {a:b for b, a in country_lookup.items()}
 cdf = df.set_index('date')
 cdf = cdf[ ['cases', 'deaths', 'iso_code']]
 cdf = cdf.pivot(columns='iso_code').reorder_levels([1,0], axis=1).sort_index(axis=1)
-cdf = cdf.fillna(0)
+#cdf = cdf.fillna(0)
 
 print(cdf.tail())
 
@@ -73,10 +73,10 @@ crd = cdf.rolling(7, center=True, min_periods=1).mean()
 
 # Calculate a 7-day rolling difference across the data, smooth the result.
 cfc = crd.rolling(7).apply(lambda x: x.iloc[-1]-x.iloc[0])
-cfc = cfc.fillna(0)
+#cfc = cfc.fillna(0)
 cfc = cfc.rolling(3, center=True, min_periods=1).mean()
 
-print(cfc.tail())
+print("Ready:", cfc.tail())
 
 ###########
 #### cfc is our final dataset, generate output.
@@ -91,6 +91,8 @@ def plot(df, kind, country=None):
         df = df.xs(kind, level=1, axis=1, drop_level=False)
         df = df.sum(axis=1)
 
+    df = df.dropna()
+
     # Default plot to last 28 days (ish)
     df = df[-7*DISPLAY_WEEKS:]  # display +1 week for initial smoothing
 
@@ -98,9 +100,15 @@ def plot(df, kind, country=None):
     ax = df.plot()
         
     ax.axhline(0, lw=3, c='k', ls='--')
+
+    if df.shape[0] == 0:
+        # No data.
+        ylim_top = 1
+        ylim_bot = -1
+    else:
+        ylim_top = np.max(df.values) * 1.2
+        ylim_bot = np.max(-df.values) * 1.2
     
-    ylim_top = np.max(df.values) * 1.2
-    ylim_bot = np.max(-df.values) * 1.2
     ylim_max = np.max([ylim_top, ylim_bot])
 
     if ylim_max > 0:
@@ -347,8 +355,7 @@ def status_map(country_status):
 
 
     def get_status_for_tla(tla):
-        geoId = country_reverse.get(tla)
-        data = country_status.get(geoId)
+        data = country_status.get(tla)
 
         if data:
             return scale_map[data['status']]
