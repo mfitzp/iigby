@@ -371,7 +371,7 @@ def status_map(country_status):
     ax.text(
         0.5, 
         0.05, 
-        'isitgettingbetteryet.com', 
+        'mfitzp.com/iigby/', 
         fontname="Raleway",
         size=12, 
         color='#000000', 
