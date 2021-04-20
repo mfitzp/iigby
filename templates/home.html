@@ -30,7 +30,7 @@
         },
         data: {
             {% for c_id, c_data in country_status.items() %}
-                {% if tlacountries[c_id] %}{{ tlacountries[c_id] }}: { fillKey: '{{ c_data.slug }}', geoId: '{{ c_id|lower }}', status: '{{ c_data.status }}'   },{% endif %}
+                {% if countries[c_id] %}{{ countries[c_id] }}: { fillKey: '{{ c_data.slug }}', geoId: '{{ c_id|lower }}', status: '{{ c_data.status }}'   },{% endif %}
             {% endfor %}
         },
         done: function(datamap) {

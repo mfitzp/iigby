@@ -36,51 +36,47 @@ for f in font_files:
     fm.fontManager.addfont(f)
 
 
-df = pd.read_csv('covid-eucdc.csv', dtype={'geoId': str}, keep_default_na=False)
+df = pd.read_csv('covid-eucdc.csv', dtype={'iso_code': str, 'total_cases': float, 'total_deaths': float}, na_values='', keep_default_na=False)
 
-# Process dates in dateRep column.
-df['dateRep'] = pd.to_datetime(df['dateRep'], format='%d/%m/%Y')
+df = df.rename(columns={'total_cases':'cases', 'total_deaths':'deaths'})
+
+df = df[ ['date', 'cases', 'deaths', 'location', 'iso_code']]
+
+print(df.tail())
+
+# Process dates in date column.
+df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')
 
 # Build the country-lookup map.
 country_lookup = {}
-for country, geoId in df[['countriesAndTerritories', 'geoId']].values:
-    if len(geoId) == 2:
-        country_lookup[geoId] = country.replace('_', ' ')
+for tlcc, geoId in df[['location', 'iso_code']].values:
+    if len(geoId) == 3:
+        country_lookup[geoId] = tlcc.replace('_', ' ')
 
-# Lookup for dynamic map.
-tla_country_lookup = {}
-for tlcc, geoId in df[['countryterritoryCode', 'geoId']].values:
-    if len(geoId) == 2:
-        tla_country_lookup[geoId] = tlcc.replace('_', ' ')
-
-# Fixes/additions
-tla_country_lookup['CZ'] = 'CZE'
-tla_reverse = {a:b for b, a in tla_country_lookup.items()}
+country_reverse = {a:b for b, a in country_lookup.items()}
 
 # Regroup by country code.
-cdf = df.set_index('dateRep')
-cdf = cdf[ ['cases', 'deaths', 'geoId']]
-cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
+cdf = df.set_index('date')
+cdf = cdf[ ['cases', 'deaths', 'iso_code']]
+cdf = cdf.pivot(columns='iso_code').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
 
+print(cdf.tail())
+
 # Get earliest/latest date from df.
-earliest = pd.to_datetime(min(cdf.index.values)) + dt.timedelta(days=5)
 updated = pd.to_datetime(max(cdf.index.values))
 
 print("Updated:", updated)
-
-# Strip the earliest 7 days (has cumulative to date)
-cdf = cdf[ cdf.index > earliest ]
 
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
 
 # Calculate a 7-day rolling difference across the data, smooth the result.
-cfc = crd.rolling(7, center=True, min_periods=1).mean()
+cfc = crd.rolling(7).apply(lambda x: x.iloc[-1]-x.iloc[0])
 cfc = cfc.fillna(0)
 cfc = cfc.rolling(3, center=True, min_periods=1).mean()
 
-print(cfc.head())
+print(cfc.tail())
 
 ###########
 #### cfc is our final dataset, generate output.
@@ -113,7 +109,7 @@ def plot(df, kind, country=None):
     ax.set_ylabel('Daily rate change vs. Previous week')
     ax.set_xlabel('')
     
-    country_name = country_lookup[country] if country else 'Europe'
+    country_name = country_lookup[country] if country else 'World'
     title = ax.set_title('Change in rate of Coronavirus {} | {}'.format(kind, country_name))
     title.set_position([.5, 1.05])
     
@@ -351,7 +347,7 @@ def status_map(country_status):
 
 
     def get_status_for_tla(tla):
-        geoId = tla_reverse.get(tla)
+        geoId = country_reverse.get(tla)
         data = country_status.get(geoId)
 
         if data:
@@ -361,7 +357,7 @@ def status_map(country_status):
 
     world['status'] = [get_status_for_tla(tla) for tla in world['iso_a3']]
 
-    world = world[(world.continent == "Europe")]
+    world = world[(world.continent == "World")]
     world = world.to_crs("EPSG:3395") # world.to_crs(epsg=3395) would also work
     ax = world.plot(column='status', cmap=cmap, norm=norm, missing_kwds={'color': '#eeeeee'})
     ax.set_xticks([])
@@ -390,7 +386,6 @@ def status_map(country_status):
 country_status = {}  # Build a list of countries and statuses, for sorted homepage table.
 
 template_c = templateEnv.get_template('country.html')
-
 
 
 for country_id, country in country_lookup.items():
@@ -447,7 +442,7 @@ fig.savefig(os.path.join('build', 'cases.png'), bbox_inches="tight", pad_inches=
 fig = plot(cfc, 'deaths')
 fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
 
-fig = status_card('Europe', status)
+fig = status_card('World', status)
 fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight", pad_inches=0)
 
 # Generate 320x240 for Pi screen.
@@ -467,11 +462,10 @@ fig.savefig(os.path.join('build', 'map_320x240.png'), bbox_inches="tight", pad_i
 template_h = templateEnv.get_template('home.html')
 
 html = template_h.render(
-    country_id='EUROPE',
-    country="Europe",
+    country_id='WORLD',
+    country="World",
     countries=country_lookup,
     country_status=country_status,
-    tlacountries=tla_country_lookup,
     status=status,
     statements=statements,
     updated=updated,
