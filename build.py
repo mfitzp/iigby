@@ -341,10 +341,10 @@ def status_card(country_name, status):
 def status_map(country_status):
     world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
     # Fix, weird
-    #world.loc[world['name'] == 'France', 'iso_a3'] = 'FRA'
-    #world.loc[world['name'] == 'Norway', 'iso_a3'] = 'NOR'
-    #world.loc[world['name'] == 'Somaliland', 'iso_a3'] = 'SOM'
-    #world.loc[world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
+    world.loc[world['name'] == 'France', 'iso_a3'] = 'FRA'
+    world.loc[world['name'] == 'Norway', 'iso_a3'] = 'NOR'
+    world.loc[world['name'] == 'Somaliland', 'iso_a3'] = 'SOM'
+    world.loc[world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
     
     scale_map = {
         'yes':0, 'maybe':1, 'no':2, "uh oh":3, 'tbc':4
@@ -364,7 +364,7 @@ def status_map(country_status):
 
     world['status'] = [get_status_for_tla(tla) for tla in world['iso_a3']]
 
-    world = world[(world.continent == "World")]
+    world = world[(world.name != "Antarctica") & (world.name != "Fr. S. Antarctic Lands")]
     world = world.to_crs("EPSG:3395") # world.to_crs(epsg=3395) would also work
     ax = world.plot(column='status', cmap=cmap, norm=norm, missing_kwds={'color': '#eeeeee'})
     ax.set_xticks([])
