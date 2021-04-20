@@ -63,16 +63,24 @@ cdf = cdf[ ['cases', 'deaths', 'geoId']]
 cdf = cdf.pivot(columns='geoId').reorder_levels([1,0], axis=1).sort_index(axis=1)
 cdf = cdf.fillna(0)
 
-# Get latest date from df.
+# Get earliest/latest date from df.
+earliest = pd.to_datetime(min(cdf.index.values)) + dt.timedelta(days=5)
 updated = pd.to_datetime(max(cdf.index.values))
+
+print("Updated:", updated)
+
+# Strip the earliest 7 days (has cumulative to date)
+cdf = cdf[ cdf.index > earliest ]
 
 # Calculate a 7-day rolling mean across the data to smooth.
 crd = cdf.rolling(7, center=True, min_periods=1).mean()
 
 # Calculate a 7-day rolling difference across the data, smooth the result.
-cfc = crd.rolling(7).apply(lambda x: x.iloc[-1]-x.iloc[0])
+cfc = crd.rolling(7, center=True, min_periods=1).mean()
 cfc = cfc.fillna(0)
 cfc = cfc.rolling(3, center=True, min_periods=1).mean()
+
+print(cfc.head())
 
 ###########
 #### cfc is our final dataset, generate output.
@@ -105,7 +113,7 @@ def plot(df, kind, country=None):
     ax.set_ylabel('Daily rate change vs. Previous week')
     ax.set_xlabel('')
     
-    country_name = country_lookup[country] if country else 'World'
+    country_name = country_lookup[country] if country else 'Europe'
     title = ax.set_title('Change in rate of Coronavirus {} | {}'.format(kind, country_name))
     title.set_position([.5, 1.05])
     
@@ -329,10 +337,10 @@ def status_card(country_name, status):
 def status_map(country_status):
     world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
     # Fix, weird
-    world.loc[world['name'] == 'France', 'iso_a3'] = 'FRA'
-    world.loc[world['name'] == 'Norway', 'iso_a3'] = 'NOR'
-    world.loc[world['name'] == 'Somaliland', 'iso_a3'] = 'SOM'
-    world.loc[world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
+    #world.loc[world['name'] == 'France', 'iso_a3'] = 'FRA'
+    #world.loc[world['name'] == 'Norway', 'iso_a3'] = 'NOR'
+    #world.loc[world['name'] == 'Somaliland', 'iso_a3'] = 'SOM'
+    #world.loc[world['name'] == 'Kosovo', 'iso_a3'] = 'RKS'
     
     scale_map = {
         'yes':0, 'maybe':1, 'no':2, "uh oh":3, 'tbc':4
@@ -353,7 +361,7 @@ def status_map(country_status):
 
     world['status'] = [get_status_for_tla(tla) for tla in world['iso_a3']]
 
-    world = world[(world.name != "Antarctica") & (world.name != "Fr. S. Antarctic Lands")]
+    world = world[(world.continent == "Europe")]
     world = world.to_crs("EPSG:3395") # world.to_crs(epsg=3395) would also work
     ax = world.plot(column='status', cmap=cmap, norm=norm, missing_kwds={'color': '#eeeeee'})
     ax.set_xticks([])
@@ -439,7 +447,7 @@ fig.savefig(os.path.join('build', 'cases.png'), bbox_inches="tight", pad_inches=
 fig = plot(cfc, 'deaths')
 fig.savefig(os.path.join('build', 'deaths.png'), bbox_inches="tight", pad_inches=0.5)
 
-fig = status_card('The World', status)
+fig = status_card('Europe', status)
 fig.savefig(os.path.join('build', 'card.png'), bbox_inches="tight", pad_inches=0)
 
 # Generate 320x240 for Pi screen.
@@ -459,8 +467,8 @@ fig.savefig(os.path.join('build', 'map_320x240.png'), bbox_inches="tight", pad_i
 template_h = templateEnv.get_template('home.html')
 
 html = template_h.render(
-    country_id='WORLD',
-    country="World",
+    country_id='EUROPE',
+    country="Europe",
     countries=country_lookup,
     country_status=country_status,
     tlacountries=tla_country_lookup,

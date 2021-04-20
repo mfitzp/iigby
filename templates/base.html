@@ -2,11 +2,9 @@
 <html>
 <head>
 
-<base href="https://www.mfitzp.com/iigby/">
-    
 <link rel="stylesheet" href="//unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="/iigby/styles.css">
+<link rel="stylesheet" href="https://www.mfitzp.com/iigby/styles.css">
 
 <script src="//code.jquery.com/jquery-latest.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha256-dtGH1XcAyKopMui5x20KnPxuGuSx9Rs6piJB/4Oqu6I=" crossorigin="anonymous"></script>
@@ -27,11 +25,11 @@
 <meta property="keywords" content="corona, data, cases, deaths, daily"/>
 
 {% if country_id != 'WORLD' %}
-    <meta property="og:image" content="https://isitgettingbetteryet.com/{{ country_id|lower }}/card.png">
-    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/{{ country_id|lower }}/card.png">
+    <meta property="og:image" content="https://www.mfitzp.com/iigby/{{ country_id|lower }}/card.png">
+    <meta name="twitter:image:src" content="https://www.mfitzp.com/iigby/{{ country_id|lower }}/card.png">
 {% else %}
-    <meta property="og:image" content="https://isitgettingbetteryet.com/map.png">
-    <meta name="twitter:image:src" content="https://isitgettingbetteryet.com/map.png">
+    <meta property="og:image" content="https://www.mfitzp.com/iigby/map.png">
+    <meta name="twitter:image:src" content="https://www.mfitzp.com/iigby/map.png">
 {% endif %}
 <meta name="twitter:card" content="summary_large_image">    
 
@@ -106,7 +104,7 @@
             </p>
             
             <p>
-                Data analysis & design &copy;2020 <a href="https://www.mfitzp.com/cv/">Martin Fitzpatrick</a> PhD 
+                Data analysis & design &copy;2020 <a href="https://www.mfitzp.com/">Martin Fitzpatrick</a> PhD 
             
             </p>
         </div>
@@ -120,11 +118,11 @@ $(function() {
     $('.country_chooser').change(function() {
         var selected = $(this).children("option:selected").val();
         if (selected) {
-            window.location.href = ('/iigby/' + selected.toLowerCase() + '/')
+            window.location.href = ('https://www.mfitzp.com/iigby/' + selected.toLowerCase() + '/')
 
         } else {
             // World, top level
-            window.location.href = ('/iigby/')
+            window.location.href = ('https://www.mfitzp.com/iigby/')
         }
     })
 });
