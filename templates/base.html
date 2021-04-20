@@ -25,6 +25,7 @@
 <meta property="keywords" content="corona, data, cases, deaths, daily"/>
 
 {% if country_id != 'WORLD' %}
+    <meta name="robots" content="noindex">
     <meta property="og:image" content="https://www.mfitzp.com/iigby/{{ country_id|lower }}/card.png">
     <meta name="twitter:image:src" content="https://www.mfitzp.com/iigby/{{ country_id|lower }}/card.png">
 {% else %}
