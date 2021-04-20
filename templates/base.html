@@ -59,7 +59,7 @@
             <h1>Is <span class="corona">COVID-19</span> getting better yet?</h1>
 
             <select class="country_chooser">
-                    <option value="">World</option>
+                    <option value="">Europe</option>
                 {% for c_id, c_name in countries.items() %}
                     <option {% if country_id == c_id %}selected{% endif %} value="{{ c_id }}">{{ c_name }}</option>
                 {% endfor %}
