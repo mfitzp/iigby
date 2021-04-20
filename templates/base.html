@@ -46,7 +46,6 @@
 
   gtag('config', 'UA-341253-13');
 </script>
-
 </head>
 <body>
     <div class="pure-g page">
@@ -126,7 +125,13 @@ $(function() {
     })
 });
 </script>
-
+<script>
+    (function() {
+      if (!location.href.endsWith('/')) {
+        window.location = location.href + '/'
+      }
+    }())
+</script>
 
 </body>
 </html>
