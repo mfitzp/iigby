@@ -4,4 +4,5 @@ wget https://covid.ourworldindata.org/data/owid-covid-data.csv -O covid-eucdc.cs
 
 mkdir -p build
 python3 build.py
-cp static/* build
+cp static/styles.css build
+cp static/_redirects .
